@@ -1,4 +1,5 @@
 defmodule CBOR.Utils do
+  @compile {:inline, encode_head: 3, encode_string: 3}
   def encode_head(mt, val, acc) when val < 24 do
     <<acc::binary, mt::size(3), val::size(5)>>
   end
