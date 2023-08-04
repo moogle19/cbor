@@ -58,32 +58,32 @@ defmodule CBOR.DecoderTest do
 
   test "RFC 7049 Appendix A Example 9" do
     encoded = <<26, 0, 15, 66, 64>>
-    assert CBOR.decode(encoded) == {:ok, 1000000, ""}
+    assert CBOR.decode(encoded) == {:ok, 1_000_000, ""}
   end
 
   test "RFC 7049 Appendix A Example 10" do
     encoded = <<27, 0, 0, 0, 232, 212, 165, 16, 0>>
-    assert CBOR.decode(encoded) == {:ok, 1000000000000, ""}
+    assert CBOR.decode(encoded) == {:ok, 1_000_000_000_000, ""}
   end
 
   test "RFC 7049 Appendix A Example 11" do
     encoded = <<27, 255, 255, 255, 255, 255, 255, 255, 255>>
-    assert CBOR.decode(encoded) == {:ok, 18446744073709551615, ""}
+    assert CBOR.decode(encoded) == {:ok, 18_446_744_073_709_551_615, ""}
   end
 
   test "RFC 7049 Appendix A Example 12" do
     encoded = <<194, 73, 1, 0, 0, 0, 0, 0, 0, 0, 0>>
-    assert CBOR.decode(encoded) == {:ok, 18446744073709551616, ""}
+    assert CBOR.decode(encoded) == {:ok, 18_446_744_073_709_551_616, ""}
   end
 
   test "RFC 7049 Appendix A Example 13" do
     encoded = <<59, 255, 255, 255, 255, 255, 255, 255, 255>>
-    assert CBOR.decode(encoded) == {:ok, -18446744073709551616, ""}
+    assert CBOR.decode(encoded) == {:ok, -18_446_744_073_709_551_616, ""}
   end
 
   test "RFC 7049 Appendix A Example 14" do
     encoded = <<195, 73, 1, 0, 0, 0, 0, 0, 0, 0, 0>>
-    assert CBOR.decode(encoded) == {:ok, -18446744073709551617, ""}
+    assert CBOR.decode(encoded) == {:ok, -18_446_744_073_709_551_617, ""}
   end
 
   test "RFC 7049 Appendix A Example 15" do
@@ -252,42 +252,53 @@ defmodule CBOR.DecoderTest do
   end
 
   test "RFC 7049 Appendix A Example 48" do
-    encoded = <<192, 116, 50, 48, 49, 51, 45, 48, 51, 45, 50, 49, 84, 50, 48, 58, 48, 52, 58, 48, 48, 90>>
+    encoded =
+      <<192, 116, 50, 48, 49, 51, 45, 48, 51, 45, 50, 49, 84, 50, 48, 58, 48, 52, 58, 48, 48, 90>>
+
     assert CBOR.decode(encoded) == {:ok, ~U[2013-03-21 20:04:00Z], ""}
   end
 
   test "RFC 7049 Appendix A Example 49" do
     encoded = <<193, 26, 81, 75, 103, 176>>
-    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 1, value: 1363896240}, ""}
+    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 1, value: 1_363_896_240}, ""}
   end
 
   test "RFC 7049 Appendix A Example 50" do
     encoded = <<193, 251, 65, 212, 82, 217, 236, 32, 0, 0>>
-    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 1, value: 1363896240.5}, ""}
+    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 1, value: 1_363_896_240.5}, ""}
   end
 
   test "RFC 7049 Appendix A Example 51" do
     encoded = <<215, 68, 1, 2, 3, 4>>
-    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 23, value: %CBOR.Tag{tag: :bytes, value: <<1, 2, 3, 4>>}}, ""}
+
+    assert CBOR.decode(encoded) ==
+             {:ok, %CBOR.Tag{tag: 23, value: %CBOR.Tag{tag: :bytes, value: <<1, 2, 3, 4>>}}, ""}
   end
 
   test "RFC 7049 Appendix A Example 52" do
     encoded = <<216, 24, 69, 100, 73, 69, 84, 70>>
-    assert CBOR.decode(encoded) == {:ok, %CBOR.Tag{tag: 24, value: %CBOR.Tag{tag: :bytes, value: "dIETF"}}, ""}
+
+    assert CBOR.decode(encoded) ==
+             {:ok, %CBOR.Tag{tag: 24, value: %CBOR.Tag{tag: :bytes, value: "dIETF"}}, ""}
   end
 
   test "RFC 7049 Appendix A Example 53" do
-    encoded = <<216, 32, 118, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 101, 120, 97, 109, 112, 108, 101, 46, 99, 111, 109>>
-    assert CBOR.decode(encoded) == {:ok, %URI{
-      authority: "www.example.com",
-      fragment: nil,
-      host: "www.example.com",
-      path: nil,
-      port: 80,
-      query: nil,
-      scheme: "http",
-      userinfo: nil
-    }, ""}
+    encoded =
+      <<216, 32, 118, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 101, 120, 97, 109, 112,
+        108, 101, 46, 99, 111, 109>>
+
+    assert CBOR.decode(encoded) ==
+             {:ok,
+              %URI{
+                authority: "www.example.com",
+                fragment: nil,
+                host: "www.example.com",
+                path: nil,
+                port: 80,
+                query: nil,
+                scheme: "http",
+                userinfo: nil
+              }, ""}
   end
 
   test "RFC 7049 Appendix A Example 54" do
@@ -343,8 +354,39 @@ defmodule CBOR.DecoderTest do
   end
 
   test "RFC 7049 Appendix A Example 66" do
-    encoded = <<152, 25, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 24, 24, 25>>
-    assert CBOR.decode(encoded) == {:ok, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], ""}
+    encoded =
+      <<152, 25, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+        23, 24, 24, 24, 25>>
+
+    assert CBOR.decode(encoded) ==
+             {:ok,
+              [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25
+              ], ""}
   end
 
   test "RFC 7049 Appendix A Example 67" do
@@ -368,8 +410,11 @@ defmodule CBOR.DecoderTest do
   end
 
   test "RFC 7049 Appendix A Example 71" do
-    encoded = <<165, 97, 97, 97, 65, 97, 98, 97, 66, 97, 99, 97, 67, 97, 100, 97, 68, 97, 101, 97, 69>>
-    assert CBOR.decode(encoded) == {:ok, %{"a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E"}, ""}
+    encoded =
+      <<165, 97, 97, 97, 65, 97, 98, 97, 66, 97, 99, 97, 67, 97, 100, 97, 68, 97, 101, 97, 69>>
+
+    assert CBOR.decode(encoded) ==
+             {:ok, %{"a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E"}, ""}
   end
 
   test "RFC 7049 Appendix A Example 72" do
@@ -408,8 +453,39 @@ defmodule CBOR.DecoderTest do
   end
 
   test "RFC 7049 Appendix A Example 79" do
-    encoded = <<159, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 24, 24, 25, 255>>
-    assert CBOR.decode(encoded) == {:ok, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], ""}
+    encoded =
+      <<159, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        24, 24, 24, 25, 255>>
+
+    assert CBOR.decode(encoded) ==
+             {:ok,
+              [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25
+              ], ""}
   end
 
   test "RFC 7049 Appendix A Example 80" do
@@ -427,7 +503,7 @@ defmodule CBOR.DecoderTest do
     assert CBOR.decode(encoded) == {:ok, %{"Fun" => true, "Amt" => -2}, ""}
   end
 
-  test "receiving a MatchError" do 
+  test "receiving a MatchError" do
     encoded = "You done goofed"
     assert CBOR.decode(encoded) == {:error, :cbor_match_error}
   end

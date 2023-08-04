@@ -94,7 +94,7 @@ defmodule CBOR do
 
   """
   @spec encode(any()) :: binary()
-  def encode(value), do: CBOR.Encoder.encode_into(value, <<>>)
+  def encode(value), do: CBOR.Encode.value(value, <<>>)
 
   @doc """
   Converts a CBOR encoded binary into native elixir data structures
