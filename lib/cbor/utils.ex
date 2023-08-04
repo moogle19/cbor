@@ -1,4 +1,6 @@
 defmodule CBOR.Utils do
+  @compile {:inline, encode_head: 2, encode_string: 2}
+
   def encode_head(mt, val, acc) when val < 24 do
     <<acc::binary, mt::size(3), val::size(5)>>
   end
@@ -24,6 +26,34 @@ defmodule CBOR.Utils do
   end
 
   def encode_string(_mt, s, acc) do
-    <<acc::binary, 0x7f, s::binary, 0xff>>
+    <<acc::binary, 0x7F, s::binary, 0xFF>>
+  end
+
+  def encode_head(mt, val) when val < 24 do
+    <<mt::size(3), val::size(5)>>
+  end
+
+  def encode_head(mt, val) when val < 0x100 do
+    <<mt::size(3), 24::size(5), val::size(8)>>
+  end
+
+  def encode_head(mt, val) when val < 0x10000 do
+    <<mt::size(3), 25::size(5), val::size(16)>>
+  end
+
+  def encode_head(mt, val) when val < 0x100000000 do
+    <<mt::size(3), 26::size(5), val::size(32)>>
+  end
+
+  def encode_head(mt, val) when val < 0x10000000000000000 do
+    <<mt::size(3), 27::size(5), val::size(64)>>
+  end
+
+  def encode_string(mt, s) when byte_size(s) < 0x10000000000000000 do
+    <<encode_head(mt, byte_size(s))::binary, s::binary>>
+  end
+
+  def encode_string(_mt, s) do
+    <<0x7F, s::binary, 0xFF>>
   end
 end
